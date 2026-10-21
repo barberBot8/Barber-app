@@ -90,6 +90,7 @@ h2{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:24px;marg
 .primary:disabled{opacity:.35}
 .ghost{height:44px;padding:0 16px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-weight:600;text-align:center}
 .small-btn{height:38px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-weight:600;font-size:15px;text-align:center}
+.small-btn:disabled{opacity:.45}
 .small-btn.ok{background:var(--ok-bg);border-color:transparent;color:var(--ok)}
 .small-btn.no{background:var(--red-bg);border-color:transparent;color:var(--red)}
 
@@ -119,6 +120,12 @@ h2{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:24px;marg
 .seg button{flex:1;text-align:center;padding:9px 0;border-radius:10px;font-weight:600;color:var(--muted)}
 .seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.15)}
 .big{font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:700;line-height:1}
+.up{color:var(--ok)}.down{color:var(--red)}.flat{color:var(--muted)}
+.axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:4px}
+.range{display:flex;gap:8px;align-items:flex-end;margin-bottom:10px}
+.range label{flex:1;font-size:13px;color:var(--muted)}
+.range input{display:block;width:100%;margin-top:4px;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card)}
+.note{font-size:13px;color:var(--muted);margin:-4px 2px 10px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
 .grid2 .card{margin:0}
 .grid2 b{font-family:'Barlow Condensed',sans-serif;font-size:32px;line-height:1;display:block}
@@ -162,7 +169,38 @@ h2{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:24px;marg
 .thumb{width:56px;height:56px;border-radius:12px;object-fit:cover;background:var(--grey-bg);flex:0 0 auto}
 .row{display:flex;gap:12px;align-items:flex-start}
 
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* animatsiyalar: faqat transform/opacity, "backwards" -- tugagach oddiy holatga qaytadi (bosish effekti ishlashi uchun) */
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}}
+@keyframes slideUp{from{transform:translateY(36px)}}
+@keyframes toastIn{from{opacity:0;transform:translateY(-14px)}}
+@keyframes grow{from{transform:scaleY(0)}}
+@keyframes shimmer{to{background-position:-200% 0}}
+#app.enter>*:not(.bar):not(.nav):not(.act):not(.sheet):not(.pend){animation:rise .3s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:var(--d,0s)}
+#app.enter>:nth-child(4){--d:.035s}#app.enter>:nth-child(5){--d:.07s}#app.enter>:nth-child(6){--d:.105s}
+#app.enter>:nth-child(7){--d:.14s}#app.enter>:nth-child(8){--d:.175s}#app.enter>:nth-child(9){--d:.21s}
+#app.enter>:nth-child(10){--d:.245s}#app.enter>:nth-child(n+11){--d:.28s}
+[data-a]{transition:transform .12s ease}
+[data-a]:active:not(:disabled){transform:scale(.96)}
+.sheet.in{animation:fadeIn .18s ease backwards}
+.sheet.in>div{animation:slideUp .26s cubic-bezier(.2,.8,.2,1) backwards}
+.toast{animation:toastIn .22s ease}
+.toast.out{opacity:0;transform:translateY(-10px);transition:opacity .2s,transform .2s}
+.skel{display:grid;gap:10px;padding:4px 0}
+.skel i{display:block;height:64px;border-radius:14px;background:linear-gradient(90deg,var(--card) 25%,var(--line) 50%,var(--card) 75%);background-size:200% 100%;animation:shimmer 1.3s linear infinite}
+.skel i:first-child{height:84px}
+.gb{transform-box:fill-box;transform-origin:50% 100%}
+#app.enter .gb{animation:grow .55s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(min(var(--i)*14ms,.6s) + .15s)}
+@keyframes navPop{0%{transform:scale(.7)}60%{transform:scale(1.2)}100%{transform:none}}
+@keyframes navTint{from{color:var(--muted)}}
+.nav.go button.on svg{animation:navPop .38s cubic-bezier(.2,.9,.3,1.4)}
+.nav.go button.on{animation:navTint .3s ease}
+@keyframes pendPop{from{transform:scale(.55);opacity:0}60%{transform:scale(1.08)}}
+@keyframes pendDraw{from{stroke-dashoffset:1}}
+#app.enter .pend{animation:pendPop .5s cubic-bezier(.2,.9,.3,1.2) backwards}
+#app.enter .pend circle,#app.enter .pend path{stroke-dasharray:1;animation:pendDraw .55s ease-out backwards .25s}
+#app.enter .pend path{animation-delay:.65s;animation-duration:.4s}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:10px;text-align:center}.cal small{color:var(--muted);padding:6px 0}
 .cd{height:42px;border-radius:10px;text-align:center;font-weight:600}.cd.dis{opacity:.3}.cd.on{background:var(--ink);color:var(--on-ink)}
 .bgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.bgrid .bcard{margin:0}.bgrid .bbody{display:block;padding:12px}.bgrid b{font-family:'Barlow Condensed',sans-serif;font-size:24px;display:block}
@@ -182,7 +220,7 @@ h2{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:24px;marg
 
 <script>
 // ====== SOZLAMA: Render'dagi bot serveringiz manzili (oxirida / belgisisiz) ======
-const API_BASE = "https://barber3-bot.onrender.com";
+const API_BASE = "https://barber-app-6ucr.onrender.com";
 // ================================================================================
 
 const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
@@ -266,9 +304,9 @@ const S = {
   theme: store("theme") || (tg && tg.colorScheme) || "light",
   view: "home", step: 1, branch: null, barber: null, picked: [], off: null, cal: null, hourOpen: null, slotInfo: null, phone: "", date: "", slots: null, slot: null, slotReq: 0, done: null,
   mineScope: "active", mine: {active: null, history: null},
-  sched: {date: "", branch: 0, list: null},
-  report: {period: "day", branch: 0, data: null},
-  set: {services: null, hours: null, hoursBranch: 0, admins: null, invite: null},
+  sched: {date: "", branch: 0, barber: 0, list: null},
+  report: {period: "day", branch: 0, barber: 0, from: "", to: "", data: null},
+  set: {services: null, hours: null, hoursBranch: 0, admins: null, invite: null, rep: null},
   modal: null,
 };
 const nm = o => (o && ((S.lang === "ru" && o.name_ru) || o.name)) || "";
@@ -293,7 +331,9 @@ const errText = e => {
   const k = "err_" + e.message;
   return (I18N[S.lang] && I18N[S.lang][k]) || I18N.uz[k] || e.message;
 };
-const isStaff = () => S.me && (S.me.role === "owner" || S.me.role === "admin");
+const isFull = () => !!(S.me && (S.me.role === "owner" || S.me.role === "admin"));
+const isBarber = () => !!(S.me && !isFull() && S.me.barber);
+const isStaff = () => isFull() || isBarber();
 const isOwner = () => S.me && S.me.role === "owner";
 
 // ---------- helpers
@@ -306,7 +346,7 @@ const shortDate = s => { const p = parts(s); return p.d + " " + MONTHS[S.lang][p
 const fmtTime = iso => new Date(iso).toLocaleTimeString("en-GB", {timeZone: TZ, hour: "2-digit", minute: "2-digit"});
 const dateOfIso = iso => ymdOf(new Date(iso));
 const money = n => Number(n).toLocaleString("ru-RU") + " " + t("sum");
-const loading = () => '<div class="empty">' + t("loading") + "…</div>";
+const loading = () => '<div class="skel" role="status" aria-label="' + t("loading") + '"><i></i><i></i><i></i></div>';
 const hasGeo = o => o && o.lat != null && o.lng != null;
 const imgSrc = u => (u ? API_BASE + u : "");
 
@@ -318,7 +358,23 @@ function toast(msg, err) {
   el.className = "toast" + (err ? " err" : "");
   el.textContent = msg;
   document.body.appendChild(el);
-  setTimeout(() => el.remove(), 2800);
+  setTimeout(() => { el.classList.add("out"); setTimeout(() => el.remove(), 220); }, 2600);
+}
+function tap() { try { tg && tg.HapticFeedback && tg.HapticFeedback.impactOccurred("light"); } catch (e) {} }
+function countUp() {
+  if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  $app.querySelectorAll("[data-count]").forEach(el => {
+    const to = Number(el.dataset.count), sum = el.dataset.fmt === "sum", t0 = performance.now(), dur = 700;
+    const fmt = n => sum ? Number(n).toLocaleString("ru-RU") + " so'm" : String(n);
+    el.textContent = fmt(0);
+    const step = now => {
+      if (!el.isConnected) return;
+      const p = Math.min(1, (now - t0) / dur);
+      el.textContent = fmt(p < 1 ? Math.round(to * (1 - Math.pow(1 - p, 3))) : to);
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  });
 }
 function haptic(kind) { try { tg && tg.HapticFeedback && tg.HapticFeedback.notificationOccurred(kind); } catch (e) {} }
 function ask(msg) {
@@ -440,6 +496,15 @@ function dateStrip(selected, from, to, action) {
   return h + "</div>";
 }
 
+function barberPills(sel, action, branchId) {
+  if (!isFull()) return "";
+  const list = (S.adminBarbers || []).filter(b => !branchId || b.branch_id === branchId);
+  if (list.length < 2) return "";
+  let h = '<div class="pills"><button class="pill' + (sel === 0 ? " on" : "") + '" data-a="' + action + '" data-id="0">Barcha ustalar</button>';
+  list.forEach(b => { h += '<button class="pill' + (sel === b.id ? " on" : "") + '" data-a="' + action + '" data-id="' + b.id + '">' + esc(nm(b)) + "</button>"; });
+  return h + "</div>";
+}
+
 function branchPills(sel, action, withAll) {
   const list = S.adminBranches || [];
   if (list.length < 2) return "";
@@ -534,7 +599,7 @@ function viewConfirm() {
 
 function viewDone() {
   const D = S.done;
-  return '<div class="pend"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h1 style="text-align:center">' + t("pend_title") + "</h1>" +
+  return '<div class="pend"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" pathLength="1"/><path d="M12 7v5l3 2" pathLength="1"/></svg></div><h1 style="text-align:center">' + t("pend_title") + "</h1>" +
     '<p class="sub" style="text-align:center">' + esc(nm(D.branch)) + "<br>" + esc(D.barber) + "<br>" + esc(D.names) + "<br>" + longDate(D.date) + ", " + D.time +
     '<br><b style="color:var(--ink)">' + money(D.price) + " · " + t("minutes", {n: D.min}) + '</b></p><p style="text-align:center;color:#B26A00">' + t("pend_text") + "</p>";
 }
@@ -579,7 +644,7 @@ function viewMine() {
 // ---------- views: staff (uz)
 function viewSched() {
   const L = S.sched.list;
-  let h = "<h1>Jadval</h1>" + branchPills(S.sched.branch, "sched-branch", true) + dateStrip(S.sched.date, -2, 11, "sched-date");
+  let h = "<h1>Jadval</h1>" + branchPills(S.sched.branch, "sched-branch", true) + barberPills(S.sched.barber, "sched-barber", S.sched.branch) + dateStrip(S.sched.date, -2, 11, "sched-date");
   if (L === null) return h + loading();
   if (!L.length) return h + '<div class="empty">Bu kunda yozilish yo\'q.</div>';
   const multi = (S.adminBranches || []).length > 1;
@@ -597,23 +662,103 @@ function viewSched() {
   }).join("");
 }
 
+const addDays = (d, n) => { const x = new Date(d + "T00:00:00Z"); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); };
+const dowOf = d => (new Date(d + "T00:00:00Z").getUTCDay() + 6) % 7;
+const monthEnd = d => new Date(Date.UTC(Number(d.slice(0, 4)), Number(d.slice(5, 7)), 0)).toISOString().slice(0, 10);
+function reportRange() {
+  const R = S.report, today = ymd(0);
+  if (R.period === "week") { const st = addDays(today, -dowOf(today)); return {start: st, end: addDays(st, 6), ps: addDays(st, -7), pe: addDays(st, -1)}; }
+  if (R.period === "month") { const st = today.slice(0, 8) + "01", pe = addDays(st, -1); return {start: st, end: monthEnd(st), ps: pe.slice(0, 8) + "01", pe}; }
+  if (R.period === "custom") return {start: R.from, end: R.to, ps: "", pe: ""};
+  return {start: today, end: today, ps: addDays(today, -1), pe: addDays(today, -1)};
+}
+const dmy = d => d.slice(8, 10) + "." + d.slice(5, 7);
+const rsum = n => Number(n).toLocaleString("ru-RU") + " so'm";
+const rpct = p => p === null || p === undefined ? "—" : p + "%";
+const rlbl = (k, g) => g === "month" ? k.slice(5, 7) + "." + k.slice(0, 4) : dmy(k);
+
+function revChart(series, group) {
+  const max = Math.max(0, ...series.map(x => x.revenue));
+  if (!max) return '<div class="muted" style="text-align:center;padding:18px 0">Bu davrda tushum yo\'q</div>';
+  const W = 320, H = 110, n = series.length, gap = n > 40 ? 1 : 3, bw = Math.max(2, (W - gap * (n - 1)) / n);
+  let bars = "";
+  series.forEach((x, i) => {
+    const h = x.revenue ? Math.max(2, Math.round(x.revenue / max * H)) : 0;
+    bars += '<rect x="' + (i * (bw + gap)).toFixed(1) + '" y="' + (H - h) + '" width="' + bw.toFixed(1) + '" height="' + h +
+      '" rx="2" class="gb" style="--i:' + i + '" fill="var(--blue)"><title>' + rlbl(x.k, group) + ": " + rsum(x.revenue) + "</title></rect>";
+  });
+  return '<svg viewBox="0 0 ' + W + " " + H + '" width="100%" preserveAspectRatio="none" style="display:block;height:110px">' + bars + "</svg>" +
+    '<div class="axis"><span>' + rlbl(series[0].k, group) + "</span><span>" + rlbl(series[n - 1].k, group) + "</span></div>";
+}
+
 function viewReport() {
   const R = S.report, d = R.data;
-  const sum = " so'm";
-  let h = "<h1>Hisobot</h1>" + branchPills(R.branch, "report-branch", true) +
-    '<div class="seg"><button class="' + (R.period === "day" ? "on" : "") + '" data-a="period" data-p="day">Bugun</button>' +
-    '<button class="' + (R.period === "month" ? "on" : "") + '" data-a="period" data-p="month">Shu oy</button></div>';
+  const per = [["day", "Bugun"], ["week", "Hafta"], ["month", "Oy"], ["custom", "Oraliq"]];
+  let h = "<h1>Hisobot</h1>" + branchPills(R.branch, "report-branch", true) + barberPills(R.barber, "report-barber", R.branch) +
+    '<div class="seg">' + per.map(x => '<button class="' + (R.period === x[0] ? "on" : "") + '" data-a="period" data-p="' + x[0] + '">' + x[1] + "</button>").join("") + "</div>";
+  if (R.period === "custom")
+    h += '<div class="range"><label>Dan<input type="date" id="r-from" value="' + esc(R.from) + '"></label>' +
+      '<label>Gacha<input type="date" id="r-to" value="' + esc(R.to) + '"></label>' +
+      '<button class="small-btn" data-a="report-range">Ko\'rsatish</button></div>';
   if (!d) return h + loading();
-  h += '<div class="card"><div class="muted">Tushum</div><div class="big">' + Number(d.revenue).toLocaleString("ru-RU") + sum + "</div></div>" +
+  if (d.error) return h + '<div class="card down">' + esc(d.error) + "</div>";
+
+  const c = d.compare, cls = c.diff > 0 ? "up" : c.diff < 0 ? "down" : "flat";
+  const sign = c.diff > 0 ? "+" : c.diff < 0 ? "−" : "";
+  h += '<div class="card"><div class="muted">Tushum · ' + dmy(d.range.start) + (d.range.days > 1 ? " – " + dmy(d.range.end) : "") + '</div>' +
+    '<div class="big" data-count="' + d.revenue + '" data-fmt="sum">' + rsum(d.revenue) + "</div>" +
+    '<div style="margin-top:6px">O\'rtacha chek: <b>' + (d.avg_check === null ? "—" : rsum(d.avg_check)) + "</b></div></div>";
+
+  h += '<div class="card"><div class="muted">Oldingi davr bilan (' + dmy(c.prev_start) + (c.prev_start !== c.prev_end ? " – " + dmy(c.prev_end) : "") + ")</div>" +
+    '<div class="list-row"><span>Oldingi davr</span><b>' + rsum(c.previous) + "</b></div>" +
+    '<div class="list-row"><span>Farq</span><b class="' + cls + '">' + sign + rsum(Math.abs(c.diff)) + "</b></div>" +
+    '<div class="list-row"><span>O\'zgarish</span><b class="' + (c.pct === null ? "flat" : cls) + '">' +
+    (c.pct === null ? "—" : (c.pct > 0 ? "+" : c.pct < 0 ? "−" : "") + Math.abs(c.pct) + "%") + "</b></div>" +
+    (c.pct === null ? '<div class="note" style="margin:6px 0 0">' + (c.previous === 0 && c.current === 0 ? "Ikkala davrda ham tushum yo'q." : "Oldingi davrda tushum bo'lmagani uchun foiz hisoblanmaydi.") + "</div>" : "") +
+    "</div>";
+
+  h += '<div class="card"><div class="muted" style="margin-bottom:8px">Tushum dinamikasi' + (d.group === "month" ? " (oylar bo'yicha)" : "") + "</div>" + revChart(d.series, d.group) + "</div>";
+
+  h += '<div class="grid2">' +
+    '<div class="card"><b data-count="' + d.counts.done + '">' + d.counts.done + '</b><span class="muted">Bajarildi</span></div>' +
+    '<div class="card"><b data-count="' + d.upcoming + '">' + d.upcoming + '</b><span class="muted">Kutilmoqda</span></div>' +
+    '<div class="card"><b data-count="' + d.counts.no_show + '">' + d.counts.no_show + '</b><span class="muted">Kelmadi</span></div>' +
+    '<div class="card"><b data-count="' + d.counts.cancelled + '">' + d.counts.cancelled + '</b><span class="muted">Bekor qilingan</span></div></div>' +
+    '<div class="note">Kutilmoqda — hali bo\'lmagan bronlar. Ular tushumga kirmaydi.</div>';
+
+  const cu = d.customers;
+  h += "<h2>Mijozlar</h2>" +
     '<div class="grid2">' +
-    '<div class="card"><b>' + d.counts.done + '</b><span class="muted">Bajarildi</span></div>' +
-    '<div class="card"><b>' + d.counts.booked + '</b><span class="muted">Kutilmoqda</span></div>' +
-    '<div class="card"><b>' + d.counts.no_show + '</b><span class="muted">Kelmadi</span></div>' +
-    '<div class="card"><b>' + d.counts.cancelled + '</b><span class="muted">Bekor qilingan</span></div></div>';
+    '<div class="card"><b data-count="' + cu.unique + '">' + cu.unique + '</b><span class="muted">Kelgan mijozlar</span></div>' +
+    '<div class="card"><b data-count="' + cu.new + '">' + cu.new + '</b><span class="muted">Yangi</span></div>' +
+    '<div class="card"><b data-count="' + cu.returning + '">' + cu.returning + '</b><span class="muted">Qaytgan</span></div>' +
+    '<div class="card"><b>' + rpct(cu.returning_rate) + '</b><span class="muted">Qaytganlar ulushi</span></div></div>' +
+    '<div class="note">Yangi — do\'konda birinchi bajarilgan vizit shu davrda. Qaytgan — oldin ham bajarilgan vizit bo\'lgan. Ma\'lumot ilova ishga tushgandan beri hisoblanadi.</div>';
+  if (d.top_customers.length)
+    h += '<div class="card"><div class="muted" style="margin-bottom:6px">Eng ko\'p kelganlar</div>' +
+      d.top_customers.map(x => '<div class="list-row"><span>' + esc(x.name) + '</span><b>' + x.visits + " ta · " + rsum(x.revenue) + "</b></div>").join("") + "</div>";
+
+  const rt = d.rates;
+  h += "<h2>Bronlar natijasi</h2>" +
+    '<div class="card">' +
+    '<div class="list-row"><span>Bajarilgan</span><b class="up">' + rpct(rt.completion) + "</b></div>" +
+    '<div class="list-row"><span>Bekor qilingan</span><b class="' + (rt.cancelled ? "down" : "flat") + '">' + rpct(rt.cancelled) + "</b></div>" +
+    '<div class="list-row"><span>Kelmagan</span><b class="' + (rt.no_show ? "down" : "flat") + '">' + rpct(rt.no_show) + "</b></div></div>" +
+    '<div class="note">Foizlar faqat vaqti o\'tgan va natijasi ma\'lum bronlardan hisoblanadi' + (rt.eligible ? " (" + rt.eligible + " ta)" : "") + ".</div>";
+  const ins = d.insights;
+  if (ins.best || ins.worst_cancel)
+    h += '<div class="card">' + (ins.best ? '<div class="list-row"><span>Eng band ' + (d.group === "month" ? "oy" : "kun") + "</span><b>" + rlbl(ins.best.k, d.group) + " · " + ins.best.count + " ta</b></div>" : "") +
+      (ins.worst_cancel ? '<div class="list-row"><span>Eng ko\'p bekor</span><b>' + rlbl(ins.worst_cancel.k, d.group) + " · " + ins.worst_cancel.count + " ta</b></div>" : "") + "</div>";
+
   h += "<h2>Ko'p so'ralgan xizmatlar</h2>";
   h += d.by_service.length
-    ? '<div class="card">' + d.by_service.map(s => '<div class="list-row"><span>' + esc(nm(s)) + "</span><b>" + s.count + "</b></div>").join("") + "</div>"
+    ? '<div class="card">' + d.by_service.map(x => '<div class="list-row"><span>' + esc(nm(x)) + "</span><b>" + x.count + "</b></div>").join("") + "</div>"
     : '<div class="empty">Hali bajarilgan vizit yo\'q.</div>';
+  if (isFull())
+    h += "<h2>Yuklab olish</h2>" +
+      '<div class="card"><div class="btns"><button class="small-btn" data-a="export-xlsx">Excel yuklab olish</button>' +
+      '<button class="small-btn" data-a="export-pdf">PDF yuklab olish</button></div>' +
+      '<div class="note" style="margin:8px 0 0">Fayl tanlangan davr, filial va usta bo\'yicha Telegramdagi shu bot chatiga yuboriladi. Aniq sanalar uchun yuqorida "Oraliq"ni tanlang.</div></div>';
   return h;
 }
 
@@ -622,6 +767,7 @@ function viewSettings() {
   const sumUz = " so'm";
   let h = "<h1>Sozlamalar</h1>";
 
+  if (isFull()) {
   h += "<h2>Do'kon ma'lumotlari</h2>";
   h += '<div class="card"><div class="row">' + logoHtml() +
     '<div style="min-width:0"><b>' + esc(nm(sh)) + "</b>" +
@@ -643,7 +789,9 @@ function viewSettings() {
     h += '<button class="ghost" style="width:100%" data-a="add-branch">+ Filial qo\'shish</button>';
   }
 
-  h += "<h2>Ustalar</h2>";
+  }
+
+  h += isFull() ? "<h2>Ustalar</h2>" : "<h2>Mening ma'lumotlarim</h2>";
   if (S.adminBarbers === null || T.services === null) h += loading();
   else {
     h += S.adminBarbers.map(b => {
@@ -651,12 +799,12 @@ function viewSettings() {
       const sv = T.services.filter(x => x.barber_id === b.id);
       return '<div class="card"><div class="row">' + (b.photo_url ? '<img class="thumb" src="' + esc(imgSrc(b.photo_url)) + '" alt="">' : "") +
         '<div style="min-width:0"><b>' + esc(nm(b)) + "</b>" + (b.active ? "" : ' <span class="tag">Yashirin</span>') + '<div class="muted">' + esc(br ? nm(br) : "") + "</div>" +
-        '<div class="muted">' + (b.linked ? "📲 Telegram ulangan ✅" : "📲 Telegram ulanmagan (xabar faqat egasiga boradi)") + "</div></div></div>" +
+        (isFull() ? '<div class="muted">' + (b.linked ? "📲 Telegram ulangan ✅" : "📲 Telegram ulanmagan (xabar faqat egasiga boradi)") + "</div>" : "") + "</div></div>" +
         '<div class="btns"><button class="small-btn" data-a="edit-barber" data-id="' + b.id + '">O\'zgartirish</button>' +
-        '<button class="small-btn" data-a="toggle-barber" data-id="' + b.id + '">' + (b.active ? "Yashirish" : "Ko'rsatish") + "</button>" +
+        (isFull() ? '<button class="small-btn" data-a="toggle-barber" data-id="' + b.id + '">' + (b.active ? "Yashirish" : "Ko'rsatish") + "</button>" : "") +
         '<button class="small-btn" data-a="off-days" data-id="' + b.id + '">Dam olish kunlari</button>' +
-        '<button class="small-btn" data-a="link-barber" data-id="' + b.id + '">' + (b.linked ? "Qayta ulash" : "Telegramga ulash") + "</button>" +
-        (b.linked ? '<button class="small-btn no" data-a="unlink-barber" data-id="' + b.id + '">Uzish</button>' : "") + "</div>" +
+        (isFull() ? '<button class="small-btn" data-a="link-barber" data-id="' + b.id + '">' + (b.linked ? "Qayta ulash" : "Telegramga ulash") + "</button>" : "") +
+        (isFull() && b.linked ? '<button class="small-btn no" data-a="unlink-barber" data-id="' + b.id + '">Uzish</button>' : "") + "</div>" +
         (T.binv && T.binv.id === b.id ? '<div class="linkbox-wrap"><div class="muted">Havolani ustaga yuboring. U bir marta ishlaydi.</div><div class="linkbox">' + esc(T.binv.link) + "</div>" +
           '<div class="btns"><button class="small-btn" data-a="copy-binv">Nusxalash</button><button class="small-btn" data-a="share-binv">Telegram orqali yuborish</button></div></div>' : "") +
         sv.map(x => '<div class="list-row"><span>' + esc(nm(x)) + (x.active ? "" : ' <span class="tag">Yashirin</span>') + '<div class="muted">' + x.duration_min + " daqiqa · " + Number(x.price).toLocaleString("ru-RU") + sumUz + "</div></span>" +
@@ -664,9 +812,10 @@ function viewSettings() {
           '<button class="small-btn" data-a="toggle-service" data-id="' + x.id + '">' + (x.active ? "Yashirish" : "Ko'rsatish") + "</button></span></div>").join("") +
         '<button class="ghost" style="width:100%;margin-top:10px" data-a="add-service" data-b="' + b.id + '">+ Xizmat qo\'shish</button></div>';
     }).join("");
-    h += '<button class="ghost" style="width:100%" data-a="add-barber">+ Usta qo\'shish</button>';
+    if (isFull()) h += '<button class="ghost" style="width:100%" data-a="add-barber">+ Usta qo\'shish</button>';
   }
 
+  if (isFull()) {
   h += "<h2>Ish vaqti</h2>" + branchPills(T.hoursBranch, "hours-branch", false);
   if (T.hours === null) h += loading();
   else {
@@ -680,6 +829,21 @@ function viewSettings() {
     }).join("") + "</div>";
   }
 
+  }
+
+  if (isOwner()) {
+    h += "<h2>Avtomatik hisobotlar</h2>";
+    const rp = T.rep;
+    if (!rp) h += loading();
+    else if (rp.unavailable) h += '<div class="empty">Bu sozlama hali tayyor emas. Avval migration2.sql ni ishga tushiring.</div>';
+    else {
+      h += '<div class="card">' + [["weekly", "Haftalik hisobot", "Har dushanba 09:00 (o'tgan hafta)"], ["monthly", "Oylik hisobot", "Har oyning 1-kuni 09:00 (o'tgan oy)"]].map(x =>
+        '<div class="list-row"><span><b>' + x[1] + '</b><div class="muted">' + x[2] + "</div></span>" +
+        '<button class="small-btn' + (rp[x[0]] ? " ok" : "") + '" data-a="toggle-report" data-k="' + x[0] + '">' + (rp[x[0]] ? "Yoqilgan ✅" : "O'chirilgan") + "</button></div>").join("") + "</div>" +
+        '<div class="note">Hisobot Telegramdagi shu bot chatiga yuboriladi.</div>' +
+        (rp.error ? '<div class="note" style="color:var(--red)">Oxirgi yuborishda xato: ' + esc(rp.error) + "</div>" : "");
+    }
+  }
   if (isOwner()) {
     h += "<h2>Adminlar</h2>";
     if (T.admins === null) h += loading();
@@ -728,7 +892,7 @@ function modalHtml() {
     return '<div class="sheet"><div><h2 style="margin-top:0">' + (m.data ? "Ustani o'zgartirish" : "Yangi usta") + "</h2>" +
       '<label for="f-name">Ismi</label><input id="f-name" type="text" value="' + esc(d.name || "") + '">' +
       '<label for="f-name-ru">Ismi (ruscha)</label><input id="f-name-ru" type="text" value="' + esc(d.name_ru || "") + '">' +
-      '<label for="f-br">Filial</label><select id="f-br">' + opts + "</select>" + photoField("Rasm", d.photo_url, "photo") + foot + "</div></div>";
+      (isFull() ? '<label for="f-br">Filial</label><select id="f-br">' + opts + "</select>" : "") + photoField("Rasm", d.photo_url, "photo") + foot + "</div></div>";
   }
   if (m.type === "off") {
     const days = []; for (let i = 0; i <= 30; i++) days.push(ymd(i));
@@ -757,6 +921,7 @@ function modalHtml() {
 }
 
 // ---------- render
+let lastScreen = "", lastModal = "", lastNav = null;
 function render() { render0(); if (S.lang === "ru") ruTree($app); }
 function render0() {
   if (!S.shop) return;
@@ -787,10 +952,14 @@ function render0() {
 
   const navTabs = [["sched", "Jadval", "clock"], ["report", "Hisobot", "report"], ["settings", "Sozlamalar", "settings"], ["home", "Mijoz", "book"]];
   const navActive = (v === "info" || v === "mine") ? "home" : v;
-  const nav = staff ? '<nav class="nav"><div>' + navTabs.map(x =>
+  const navChanged = lastNav !== null && navActive !== lastNav; lastNav = navActive;
+  const nav = staff ? '<nav class="nav' + (navChanged ? " go" : "") + '"><div>' + navTabs.map(x =>
     '<button class="' + (navActive === x[0] ? "on" : "") + '" data-a="tab" data-t="' + x[0] + '">' + icon(x[2]) + "<span>" + x[1] + "</span></button>").join("") + "</div></nav>" : "";
 
   const scrollX = document.querySelector(".strip") ? document.querySelector(".strip").scrollLeft : 0;
+  const key = v + ":" + (v === "home" ? S.step + (S.done ? "d" : "") : "") + ":" + (body.indexOf('class="skel"') >= 0 ? "L" : "R");
+  const animate = key !== lastScreen; lastScreen = key;
+  $app.classList.toggle("enter", animate);
   $app.innerHTML = '<div class="bar"><i style="width:' + pct + '%"></i></div>' + head + body +
     (act ? '<div class="act' + (staff ? " hn" : "") + '"><div>' + act + "</div></div>" : "") + nav + modalHtml();
   const strip = document.querySelector(".strip");
@@ -798,6 +967,10 @@ function render0() {
     const on = strip.querySelector(".chip.on");
     if (scrollX) strip.scrollLeft = scrollX; else if (on) strip.scrollLeft = Math.max(0, on.offsetLeft - strip.clientWidth / 2 + on.clientWidth / 2);
   }
+  const mk = S.modal ? (S.modal.type || "m") : "";
+  if (mk && mk !== lastModal) { const sh = $app.querySelector(".sheet"); if (sh) sh.classList.add("in"); }
+  lastModal = mk;
+  if (animate && v === "report") countUp();
 }
 
 // ---------- loaders
@@ -821,13 +994,34 @@ async function loadMine(scope) {
 }
 async function loadSched() {
   S.sched.list = null; render();
-  try { S.sched.list = await api("/api/admin/bookings?date_=" + S.sched.date + "&branch_id=" + S.sched.branch); } catch (e) { S.sched.list = []; toast(errText(e), true); }
+  try { S.sched.list = await api("/api/admin/bookings?date_=" + S.sched.date + "&branch_id=" + S.sched.branch + "&barber_id=" + S.sched.barber); } catch (e) { S.sched.list = []; toast(errText(e), true); }
   render();
 }
+let exporting = false;
+async function doExport(fmt) {
+  if (exporting) return;
+  const R = S.report, r = reportRange();
+  if (!r.start || !r.end) return toast("Boshlanish va tugash sanasini tanlang.", true);
+  if (r.start > r.end) return toast("Boshlanish sanasi tugash sanasidan keyin bo'lishi mumkin emas.", true);
+  exporting = true;
+  const btns = document.querySelectorAll('[data-a="export-xlsx"],[data-a="export-pdf"]'), old = [];
+  btns.forEach((b, i) => { old[i] = b.textContent; b.disabled = true; b.textContent = "Tayyorlanmoqda…"; });
+  try {
+    await api("/api/admin/export?fmt=" + fmt + "&start=" + r.start + "&end=" + r.end + "&branch_id=" + R.branch + "&barber_id=" + R.barber, {method: "POST"});
+    toast("Fayl Telegramga yuborildi ✅");
+  } catch (e) { toast(errText(e), true); }
+  exporting = false;
+  btns.forEach((b, i) => { b.disabled = false; b.textContent = old[i]; });
+}
 async function loadReport() {
-  S.report.data = null; render();
-  try { S.report.data = await api("/api/admin/report?period=" + S.report.period + "&branch_id=" + S.report.branch); }
-  catch (e) { S.report.data = {revenue: 0, counts: {booked: 0, done: 0, no_show: 0, cancelled: 0}, by_service: []}; toast(errText(e), true); }
+  const R = S.report; R.data = null; render();
+  const r = reportRange();
+  if (!r.start || !r.end) { R.data = {error: "Boshlanish va tugash sanasini tanlang."}; return render(); }
+  if (r.start > r.end) { R.data = {error: "Boshlanish sanasi tugash sanasidan keyin bo'lishi mumkin emas."}; return render(); }
+  try {
+    R.data = await api("/api/admin/analytics?start=" + r.start + "&end=" + r.end + (r.ps ? "&prev_start=" + r.ps + "&prev_end=" + r.pe : "") +
+      "&branch_id=" + R.branch + "&barber_id=" + R.barber);
+  } catch (e) { R.data = {error: errText(e)}; }
   render();
 }
 async function refreshBranches() {
@@ -841,13 +1035,16 @@ async function loadHours() {
   render();
 }
 async function loadSettings() {
-  S.set.services = null; S.set.hours = null; if (isOwner()) S.set.admins = null; render();
+  S.set.services = null; S.set.hours = null; if (isOwner()) { S.set.admins = null; S.set.rep = null; } render();
   try {
     const [sv, bs] = await Promise.all([api("/api/admin/services"), api("/api/admin/barbers"), refreshBranches()]);
     S.set.services = sv; S.adminBarbers = bs;
-    if (!S.adminBranches.some(b => b.id === S.set.hoursBranch)) S.set.hoursBranch = S.adminBranches.length ? S.adminBranches[0].id : 0;
-    S.set.hours = S.set.hoursBranch ? await api("/api/admin/work-hours?branch_id=" + S.set.hoursBranch) : [];
+    if (isFull()) {
+      if (!S.adminBranches.some(b => b.id === S.set.hoursBranch)) S.set.hoursBranch = S.adminBranches.length ? S.adminBranches[0].id : 0;
+      S.set.hours = S.set.hoursBranch ? await api("/api/admin/work-hours?branch_id=" + S.set.hoursBranch) : [];
+    } else S.set.hours = [];
     if (isOwner()) S.set.admins = await api("/api/admin/admins");
+    if (isOwner()) { try { S.set.rep = await api("/api/admin/report-settings"); } catch (e2) { S.set.rep = {unavailable: true}; } }
   } catch (e) {
     toast(errText(e), true);
     S.set.services = S.set.services || []; S.adminBarbers = S.adminBarbers || []; S.set.hours = S.set.hours || [];
@@ -927,14 +1124,36 @@ const H = {
 
   // staff
   "sched-date": d => { S.sched.date = d.d; loadSched(); },
-  "sched-branch": d => { S.sched.branch = Number(d.id); loadSched(); },
-  "report-branch": d => { S.report.branch = Number(d.id); loadReport(); },
+  "sched-branch": d => { S.sched.branch = Number(d.id); S.sched.barber = 0; loadSched(); },
+  "sched-barber": d => { S.sched.barber = Number(d.id); loadSched(); },
+  "report-branch": d => { S.report.branch = Number(d.id); S.report.barber = 0; loadReport(); },
+  "report-barber": d => { S.report.barber = Number(d.id); loadReport(); },
   "set-status": async d => {
     if (d.s === "cancelled" && !(await ask("Yozilishni bekor qilamizmi? Mijozga xabar boradi."))) return;
     try { await api("/api/admin/bookings/" + d.id + "/status", {method: "POST", body: {status: d.s}}); haptic("success"); loadSched(); }
     catch (e) { toast(errText(e), true); }
   },
-  period: d => { S.report.period = d.p; loadReport(); },
+  period: d => {
+    const R = S.report; R.period = d.p;
+    if (d.p === "custom") { R.from = R.from || ymd(-6); R.to = R.to || ymd(0); }
+    loadReport();
+  },
+  "toggle-report": async d => {
+    const rp = S.set.rep;
+    if (!rp || rp.unavailable) return;
+    try {
+      S.set.rep = await api("/api/admin/report-settings", {method: "PUT", body: {[d.k]: !rp[d.k]}});
+      toast(S.set.rep[d.k] ? "Yoqildi" : "O'chirildi");
+    } catch (e) { toast(errText(e), true); }
+    render();
+  },
+  "export-xlsx": () => doExport("xlsx"),
+  "export-pdf": () => doExport("pdf"),
+  "report-range": () => {
+    const f = document.getElementById("r-from"), t = document.getElementById("r-to");
+    S.report.from = f ? f.value : S.report.from; S.report.to = t ? t.value : S.report.to;
+    loadReport();
+  },
   "hours-branch": d => { S.set.hoursBranch = Number(d.id); loadHours(); },
   "close-modal": () => { S.modal = null; render(); },
   "use-geo": () => {
@@ -972,7 +1191,8 @@ const H = {
   },
   "edit-barber": d => { S.modal = {type: "barber", data: S.adminBarbers.find(b => b.id === Number(d.id)), pending: null}; render(); },
   "save-barber": async () => {
-    const m = S.modal, name = document.getElementById("f-name").value.trim(), branch_id = Number(document.getElementById("f-br").value);
+    const m = S.modal, name = document.getElementById("f-name").value.trim(), brEl = document.getElementById("f-br");
+    const branch_id = brEl ? Number(brEl.value) : (m.data ? m.data.branch_id : 0);
     if (!name || !branch_id) { toast("Ism va filialni kiriting", true); return; }
     try {
       const br = m.data ? await api("/api/admin/barbers/" + m.data.id, {method: "PATCH", body: {name, branch_id, name_ru: (document.getElementById("f-name-ru").value || "").trim()}})
@@ -1085,6 +1305,7 @@ const H = {
 document.addEventListener("click", e => {
   const el = e.target.closest("[data-a]");
   if (!el || !H[el.dataset.a]) return;
+  if (!el.disabled) tap();
   H[el.dataset.a](el.dataset, el);
 });
 document.addEventListener("keydown", e => {
@@ -1142,6 +1363,7 @@ async function boot() {
     S.me = b.me; S.shop = b.shop; S.branches = b.branches; S.services = b.services; S.barbers = b.barbers || [];
     S.lang = b.me.lang || S.lang; store("lang", S.lang);
     if (isStaff()) S.adminBranches = await api("/api/admin/branches");
+    if (isFull()) { try { S.adminBarbers = await api("/api/admin/barbers"); } catch (e2) { S.adminBarbers = []; } }
   } catch (e) {
     clearTimeout(slow);
     screen(t("failed"), errText(e), true);
